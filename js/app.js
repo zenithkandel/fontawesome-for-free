@@ -189,6 +189,137 @@ const CATS = [
   },
 ];
 
+// Hard cap to keep the page responsive and avoid DOM overload.
+const MAX_ICONS_PER_CATEGORY = 12;
+
+// Prefer practical, recognizable icons for the preview cards.
+const USEFUL_ICON_PRIORITY = [
+  "house",
+  "user",
+  "users",
+  "user-group",
+  "gear",
+  "cog",
+  "envelope",
+  "phone",
+  "bell",
+  "calendar",
+  "calendar-days",
+  "camera",
+  "image",
+  "heart",
+  "star",
+  "comment",
+  "comments",
+  "magnifying-glass",
+  "search",
+  "download",
+  "upload",
+  "trash",
+  "pen-to-square",
+  "lock",
+  "unlock",
+  "shield",
+  "bolt",
+  "wifi",
+  "cloud",
+  "folder",
+  "file",
+  "chart-line",
+  "chart-bar",
+  "chart-pie",
+  "briefcase",
+  "cart-shopping",
+  "credit-card",
+  "location-dot",
+  "map-marker",
+  "check",
+  "circle-check",
+  "circle-xmark",
+  "circle-exclamation",
+  "circle-info",
+  "thumbs-up",
+  "thumbs-down",
+  "play",
+  "pause",
+  "stop",
+  "music",
+  "book",
+  "globe",
+  "car",
+  "truck",
+  "plane",
+  "hospital",
+  "stethoscope",
+  "user-doctor",
+  "chart-simple",
+  "message",
+  "clipboard",
+  "floppy-disk",
+  "paper-plane",
+  "filter",
+  "link",
+  "key",
+  "camera-retro",
+  "database",
+  "server",
+  "terminal",
+  "code",
+  "rectangle-list",
+  "bars",
+  "list-check",
+  "flag",
+  "fire",
+  "leaf",
+  "gift",
+  "wallet",
+  "tag",
+  "clock",
+  "map",
+  "compass",
+  "robot",
+  "headset",
+  "screwdriver-wrench",
+  "building",
+  "school",
+  "store",
+  "basket-shopping",
+  "money-bill",
+  "money-check",
+  "qrcode",
+  "barcode",
+  "triangle-exclamation",
+  "circle-question",
+  "print",
+];
+
+const SYMBOL_LIKE_ICON_SLUGS = new Set([
+  "0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9",
+  "hashtag",
+  "exclamation",
+  "question",
+  "at",
+  "percent",
+  "dollar",
+  "dollar-sign",
+  "ampersand",
+  "plus",
+  "minus",
+  "equals",
+  "less-than",
+  "greater-than",
+  "asterisk",
+]);
+
 // ─── MULTI-FORMAT CSS PARSER ─────────────────────────────────────────────────
 /*
 FA CSS has evolved through several formats. We try all of them:
@@ -294,6 +425,46 @@ function parseCss(css) {
   while ((m = reGeneric.exec(css)) !== null) add(m[1]);
 
   return icons;
+}
+
+function limitIcons(icons) {
+  const bySlug = new Map();
+  for (const icon of icons) {
+    const slug = icon.cls.replace(/^fa-/, "");
+    if (!bySlug.has(slug)) bySlug.set(slug, icon);
+  }
+
+  const isSymbolLike = (icon) => {
+    const slug = icon.cls.replace(/^fa-/, "");
+    if (SYMBOL_LIKE_ICON_SLUGS.has(slug)) return true;
+    return slug.length === 1 && /^[a-z0-9]$/i.test(slug);
+  };
+
+  const selected = [];
+  const used = new Set();
+
+  for (const slug of USEFUL_ICON_PRIORITY) {
+    const icon = bySlug.get(slug);
+    if (!icon) continue;
+    selected.push(icon);
+    used.add(icon.cls);
+    if (selected.length >= MAX_ICONS_PER_CATEGORY) return selected;
+  }
+
+  const nonSymbolPool = icons.filter((icon) => !used.has(icon.cls) && !isSymbolLike(icon));
+  for (const icon of nonSymbolPool) {
+    selected.push(icon);
+    used.add(icon.cls);
+    if (selected.length >= MAX_ICONS_PER_CATEGORY) return selected;
+  }
+
+  for (const icon of icons) {
+    if (used.has(icon.cls)) continue;
+    selected.push(icon);
+    if (selected.length >= MAX_ICONS_PER_CATEGORY) break;
+  }
+
+  return selected;
 }
 
 // ─── DETECT FORMAT LABEL ─────────────────────────────────────────────────────
@@ -538,7 +709,7 @@ async function init() {
         c.id !== "brands" &&
         fallbackIcons.length > 0;
 
-      cat.icons = fromFallback ? fallbackIcons : directIcons;
+      cat.icons = limitIcons(fromFallback ? fallbackIcons : directIcons);
       cat.format = fromFallback
         ? `${detectFormat(css)} + shared icons (${fallbackSource})`
         : detectFormat(css);
