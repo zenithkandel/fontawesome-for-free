@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Font Awesome Full Icon Preview</title>
+    <style>
+      :root {
+        --bg-1: #faf6ef;
+        --bg-2: #f1e3c6;
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --card: #fffdf8;
+        --line: #d6c7a8;
+        --accent: #9a3412;
+        --accent-soft: #ffedd5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background:
+          radial-gradient(
+            circle at 0 0,
+            rgba(255, 255, 255, 0.7),
+            transparent 42%
+          ),
+          radial-gradient(
+            circle at 100% 100%,
+            rgba(249, 115, 22, 0.17),
+            transparent 45%
+          ),
+          linear-gradient(145deg, var(--bg-1), var(--bg-2));
+        min-height: 100vh;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        backdrop-filter: blur(8px);
+        background: rgba(250, 246, 239, 0.88);
+        border-bottom: 1px solid var(--line);
+        padding: 14px 20px;
+      }
+
+      .topbar {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: grid;
+        gap: 10px;
+      }
+
+      .title {
+        margin: 0;
+        font-size: clamp(1.05rem, 2.3vw, 1.5rem);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      input[type="search"] {
+        flex: 1 1 320px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font-size: 0.95rem;
+      }
+
+      button {
+        border: 1px solid #c56b3f;
+        background: linear-gradient(180deg, #f59e0b, #ea580c);
+        color: #fff;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 9px 12px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        filter: brightness(1.06);
+      }
+
+      main {
+        max-width: 1400px;
+        margin: 18px auto 40px;
+        padding: 0 20px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+
+      details {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 253, 248, 0.9);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+      }
+
+      summary {
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        padding: 12px 14px;
+        user-select: none;
+        background: linear-gradient(90deg, #fff8ef, #fffdf8);
+      }
+
+      summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .sheet-name {
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .sheet-count {
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid #fdba74;
+        border-radius: 999px;
+        padding: 2px 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .icon-grid {
+        padding: 14px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+      }
+
+      .icon-card {
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 10px;
+        min-height: 104px;
+        padding: 10px 8px;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        align-items: center;
+        justify-items: center;
+        text-align: center;
+        gap: 8px;
+      }
+
+      .icon-card i,
+      .icon-card span.render-target {
+        font-size: 1.45rem;
+        line-height: 1;
+        display: inline-block;
+        min-height: 1.45rem;
+      }
+
+      .icon-label {
+        width: 100%;
+        font-size: 0.76rem;
+        color: #374151;
+        overflow-wrap: anywhere;
+        border-top: 1px dashed #e7d7b8;
+        padding-top: 6px;
+      }
+
+      .hidden-by-search {
+        display: none !important;
+      }
+
+      @media (max-width: 640px) {
+        .icon-grid {
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+
+        .icon-card {
+          min-height: 94px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="topbar">
+        <h1 class="title">All Font Awesome Icons by Stylesheet</h1>
+        <p class="subtitle">
+          Auto-parsed from every CSS file in the local css folder. Use search to
+          filter by class names.
+        </p>
+        <div class="controls">
+          <input
+            id="search"
+            type="search"
+            placeholder="Search icon class, e.g. house, user, brands, duotone..."
+          />
+          <button id="openAll" type="button">Open All</button>
+          <button id="closeAll" type="button">Close All</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="status" class="status">
+        Loading stylesheets and extracting icon rules...
+      </div>
+      <div id="results"></div>
+    </main>
+
+    <script>
+      const CSS_FILES = [
+        "brands.css",
+        "chisel-regular.css",
+        "duotone-light.css",
+        "duotone-regular.css",
+        "duotone-thin.css",
+        "duotone.css",
+        "etch-solid.css",
+        "fontawesome.css",
+        "graphite-thin.css",
+        "jelly-duo-regular.css",
+        "jelly-fill-regular.css",
+        "jelly-regular.css",
+        "light.css",
+        "notdog-duo-solid.css",
+        "notdog-solid.css",
+        "regular.css",
+        "sharp-duotone-light.css",
+        "sharp-duotone-regular.css",
+        "sharp-duotone-solid.css",
+        "sharp-duotone-thin.css",
+        "sharp-light.css",
+        "sharp-regular.css",
+        "sharp-solid.css",
+        "sharp-thin.css",
+        "slab-press-regular.css",
+        "slab-regular.css",
+        "solid.css",
+        "thin.css",
+        "thumbprint-light.css",
+        "utility-duo-semibold.css",
+        "utility-fill-semibold.css",
+        "utility-semibold.css",
+        "whiteboard-semibold.css",
+      ];
+
+      const STYLE_CLASS_HINTS = [
+        "fa-solid",
+        "fa-regular",
+        "fa-light",
+        "fa-thin",
+        "fa-brands",
+        "fa-duotone",
+        "fa-sharp",
+        "fa-jelly",
+        "fa-notdog",
+        "fa-utility",
+        "fa-thumbprint",
+        "fa-chisel",
+        "fa-etch",
+        "fa-graphite",
+        "fa-slab",
+        "fa-whiteboard",
+      ];
+
+      const statusEl = document.getElementById("status");
+      const resultsEl = document.getElementById("results");
+      const searchEl = document.getElementById("search");
+
+      function attachStylesheets() {
+        for (const file of CSS_FILES) {
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = "css/" + file;
+          document.head.appendChild(link);
+        }
+      }
+
+      function getBestLabel(classes) {
+        for (let i = classes.length - 1; i >= 0; i -= 1) {
+          const cls = classes[i];
+          if (!STYLE_CLASS_HINTS.includes(cls)) {
+            return cls;
+          }
+        }
+        return classes[classes.length - 1] || "unknown";
+      }
+
+      function parseIconEntries(cssText) {
+        const entries = new Map();
+        const blockRe = /([^{}]+)\{([^{}]*)\}/g;
+        let block;
+
+        while ((block = blockRe.exec(cssText)) !== null) {
+          const selectorsText = block[1];
+          const declarations = block[2];
+
+          if (!/content\s*:\s*["'][^"']+["']/.test(declarations)) {
+            continue;
+          }
+
+          if (!/:before\b|::before\b/.test(selectorsText)) {
+            continue;
+          }
+
+          const selectors = selectorsText.split(",");
+          for (const selectorRaw of selectors) {
+            const selector = selectorRaw.trim();
+            if (!selector || !/:before\b|::before\b/.test(selector)) {
+              continue;
+            }
+
+            const classes = selector.match(/\.fa-[a-z0-9-]+/gi);
+            if (!classes || classes.length === 0) {
+              continue;
+            }
+
+            const normalized = [
+              ...new Set(classes.map((cls) => cls.slice(1).toLowerCase())),
+            ];
+            const classCombo = normalized.join(" ");
+            if (!entries.has(classCombo)) {
+              entries.set(classCombo, {
+                classCombo,
+                label: getBestLabel(normalized),
+              });
+            }
+          }
+        }
+
+        return Array.from(entries.values()).sort((a, b) =>
+          a.label.localeCompare(b.label),
+        );
+      }
+
+      function createIconCard(icon) {
+        const card = document.createElement("article");
+        card.className = "icon-card";
+        card.dataset.search = (
+          icon.classCombo +
+          " " +
+          icon.label
+        ).toLowerCase();
+
+        const glyph = document.createElement("span");
+        glyph.className = "render-target " + icon.classCombo;
+        glyph.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("div");
+        label.className = "icon-label";
+        label.textContent = icon.classCombo;
+
+        card.appendChild(glyph);
+        card.appendChild(label);
+        return card;
+      }
+
+      function renderSheet(fileName, icons, openByDefault) {
+        const details = document.createElement("details");
+        details.open = openByDefault;
+
+        const summary = document.createElement("summary");
+
+        const name = document.createElement("span");
+        name.className = "sheet-name";
+        name.textContent = fileName;
+
+        const count = document.createElement("span");
+        count.className = "sheet-count";
+        count.textContent = icons.length + " icons";
+
+        summary.appendChild(name);
+        summary.appendChild(count);
+
+        const grid = document.createElement("div");
+        grid.className = "icon-grid";
+        for (const icon of icons) {
+          grid.appendChild(createIconCard(icon));
+        }
+
+        details.appendChild(summary);
+        details.appendChild(grid);
+        return details;
+      }
+
+      function applySearch() {
+        const needle = searchEl.value.trim().toLowerCase();
+        const cards = resultsEl.querySelectorAll(".icon-card");
+        let visible = 0;
+
+        for (const card of cards) {
+          const matched = !needle || card.dataset.search.includes(needle);
+          card.classList.toggle("hidden-by-search", !matched);
+          if (matched) {
+            visible += 1;
+          }
+        }
+
+        statusEl.textContent =
+          "Showing " +
+          visible +
+          " icon renders from " +
+          cards.length +
+          " parsed entries.";
+      }
+
+      function wireControls() {
+        document.getElementById("openAll").addEventListener("click", () => {
+          resultsEl.querySelectorAll("details").forEach((el) => {
+            el.open = true;
+          });
+        });
+
+        document.getElementById("closeAll").addEventListener("click", () => {
+          resultsEl.querySelectorAll("details").forEach((el) => {
+            el.open = false;
+          });
+        });
+
+        searchEl.addEventListener("input", applySearch);
+      }
+
+      async function loadAll() {
+        attachStylesheets();
+        wireControls();
+
+        const fetches = CSS_FILES.map(async (file) => {
+          const response = await fetch("css/" + file, { cache: "no-store" });
+          if (!response.ok) {
+            return { file, icons: [], error: "HTTP " + response.status };
+          }
+          const text = await response.text();
+          const icons = parseIconEntries(text);
+          return { file, icons, error: null };
+        });
+
+        const sheets = await Promise.all(fetches);
+        let total = 0;
+        resultsEl.innerHTML = "";
+
+        for (const sheet of sheets) {
+          total += sheet.icons.length;
+          const section = renderSheet(
+            sheet.file,
+            sheet.icons,
+            sheet.icons.length > 0 && total < 900,
+          );
+          if (sheet.error) {
+            const warning = document.createElement("div");
+            warning.className = "status";
+            warning.textContent =
+              "Could not read " + sheet.file + ": " + sheet.error;
+            section.appendChild(warning);
+          }
+          resultsEl.appendChild(section);
+        }
+
+        statusEl.textContent =
+          "Parsed " +
+          total +
+          " icon rules across " +
+          sheets.length +
+          " stylesheets.";
+        applySearch();
+      }
+
+      loadAll().catch((error) => {
+        statusEl.textContent = "Failed to load icon data: " + error.message;
+      });
+    </script>
+  </body>
+</html>
