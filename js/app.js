@@ -167,25 +167,25 @@
           id: "utility-semibold",
           file: "css/utility-semibold.css",
           label: "Utility Semibold",
-          style: "fa-utility",
+          style: "fa-utility fa-semibold",
         },
         {
           id: "utility-duo-semibold",
           file: "css/utility-duo-semibold.css",
           label: "Utility Duo Semibold",
-          style: "fa-utility-duo",
+          style: "fa-utility-duo fa-semibold",
         },
         {
           id: "utility-fill-semibold",
           file: "css/utility-fill-semibold.css",
           label: "Utility Fill Semibold",
-          style: "fa-utility-fill",
+          style: "fa-utility-fill fa-semibold",
         },
         {
           id: "whiteboard-semibold",
           file: "css/whiteboard-semibold.css",
           label: "Whiteboard Semibold",
-          style: "fa-whiteboard",
+          style: "fa-whiteboard fa-semibold",
         },
       ];
 
@@ -499,7 +499,20 @@
       async function init() {
         const sw = document.getElementById("secwrap");
         const tbar = document.getElementById("tbar");
+        let fallbackIcons = [];
+        let fallbackSource = "";
         let totalIcons = 0;
+
+        try {
+          const fallbackRes = await fetch("css/fontawesome.css");
+          if (fallbackRes.ok) {
+            const fallbackCss = await fallbackRes.text();
+            fallbackIcons = parseCss(fallbackCss);
+            fallbackSource = "fontawesome.css";
+          }
+        } catch {
+          // Keep going; each category still attempts to parse its own stylesheet.
+        }
 
         for (let i = 0; i < CATS.length; i++) {
           const c = CATS[i];
@@ -519,8 +532,16 @@
             const r = await fetch(c.file);
             if (!r.ok) throw new Error(`HTTP ${r.status}`);
             const css = await r.text();
-            cat.icons = parseCss(css);
-            cat.format = detectFormat(css);
+            const directIcons = parseCss(css);
+            const fromFallback =
+              directIcons.length === 0 &&
+              c.id !== "brands" &&
+              fallbackIcons.length > 0;
+
+            cat.icons = fromFallback ? fallbackIcons : directIcons;
+            cat.format = fromFallback
+              ? `${detectFormat(css)} + shared icons (${fallbackSource})`
+              : detectFormat(css);
             // Store first 600 chars for debug display (strip comments)
             cat.cssSnippet = css
               .replace(/\/\*[\s\S]*?\*\//g, "")
